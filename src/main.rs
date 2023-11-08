@@ -53,12 +53,13 @@ async fn main() {
     let old_screen = Texture2D::from_image(&old_screen_img);
 
     loop {
+
         // Update
         v = velocity(x, y, v);
         x += v[0];
         y += v[1];
 
-        // Draw
+        // Trails
         draw_texture_ex(
             &old_screen,
             0.,
@@ -71,10 +72,17 @@ async fn main() {
             },
         );
 
+        // Check Input
+        if is_key_pressed(KeyCode::Backspace) {
+            clear_background(BLACK);
+            frame_count = 2;
+        }
+
+        // Draw
         draw_circle(x, y, RADIUS, color);
 
         // Update Trails
-        if frame_count == 2 {
+        if frame_count >= 2 {
             frame_count = 0;
             old_screen_img = get_screen_data();
             old_screen.update(&old_screen_img);
