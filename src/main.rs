@@ -2,13 +2,18 @@ use macroquad::prelude::*;
 
 const RADIUS: f32 = 15.0;
 
-fn pick_color(v: [f32; 2]) -> Color {
-    Color::from_rgba(
-        rand::gen_range(50, 240),
-        rand::gen_range(50, 240),
-        rand::gen_range(50, 240),
-        255,
-    )
+fn pick_color(v: [f32; 2], color: Color) -> Color {
+    let min_speed = 0.5;
+    if v[0].abs() > min_speed || v[1].abs() > min_speed {
+        Color::from_rgba(
+            rand::gen_range(50, 240),
+            rand::gen_range(50, 240),
+            rand::gen_range(50, 240),
+            255,
+        )
+    } else {
+        color
+    }
 }
 
 fn mouse_difference(x: f32, y: f32) -> [f32; 2] {
@@ -42,8 +47,8 @@ async fn main() {
     let mut y = screen_height() / 2.0;
     let mut v = [0.0, 0.0];
 
-//    let mut color = color_u8!(128, 128, 128, 255);
-    let mut color = pick_color(v);
+    let color = color_u8!(128, 128, 128, 255);
+    let mut color = pick_color(v, color);
     let mut old_screen_img = get_screen_data();
     let old_screen = Texture2D::from_image(&old_screen_img);
 
@@ -73,7 +78,7 @@ async fn main() {
             frame_count = 0;
             old_screen_img = get_screen_data();
             old_screen.update(&old_screen_img);
-            color = pick_color(v); // less flashing
+            color = pick_color(v, color); // less flashing
         } else {
             frame_count += 1;
         }
